@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hexamuunnin</title>
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS tuki -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Hexamuunnin">
+
+    <!-- Ikoni iOS:lle -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <script>
+        // Rekisteröi service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #00A2E8;
+            margin-left: 3%;
+            margin-right: 3%;
+            font-family: Arial, sans-serif;
+            }
+    </style>
+    
+</head>
+<body>
+
+<h1>Hexamuunnin</h1>
+
+<label>Desimaali → Hex</label><br>
+<input id="dec" type="number" oninput="toHex()"><br><br>
+
+<label>Hex → Desimaali</label><br>
+<input id="hex" type="text" oninput="toDec()"><br><br>
+
+<script>
+function toHex() {
+    const dec = parseInt(document.getElementById("dec").value);
+    if (!isNaN(dec)) {
+        document.getElementById("hex").value = dec.toString(16).toUpperCase();
+    }
+}
+
+function toDec() {
+    const hex = document.getElementById("hex").value;
+    if (/^[0-9A-Fa-f]+$/.test(hex)) {
+        document.getElementById("dec").value = parseInt(hex, 16);
+    }
+}
+</script>
+
+</body>
+
+</html>
+
+
+
+
+
