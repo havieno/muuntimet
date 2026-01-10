@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hexamuunnin</title>
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS tuki -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Hexamuunnin">
+
+    <!-- Ikoni iOS:lle -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <script>
+        // Rekisteröi service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 300px;
+        margin: 20px auto;
+        padding: 10px;
+	background-color: #AAbb88; /* ? */
+        border-radius: 10px;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 18px;
+    }
+    .info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<h2>Dec2Bin / Bin2Dec</h2>
+
+<label>Desimaali → Binääriluku</label>
+<input id="dec" type="number" placeholder="Syötä desimaaliluku">
+
+<label>Binääriluku → Desimaali</label>
+<input id="bin" type="text" placeholder="Syötä binääriluku (1101... jne.)">
+
+<div class="info">Kentät tyhjentyvät automaattisesti 3 sekunnin kuluttua.</div>
+
+<script>
+let clearTimer;
+
+// Tyhjennys 3 sekunnin kuluttua
+function startAutoClear() {
+    clearTimeout(clearTimer);
+    clearTimer = setTimeout(() => {
+        document.getElementById("dec").value = "";
+        document.getElementById("bin").value = "";
+    }, 3000);
+}
+
+
+// Desimaali → Binääriluku
+document.getElementById("dec").addEventListener("input", function () {
+    const dec = this.value;
+
+    if (dec === "") {
+        document.getElementById("bin").value = "";
+        return;
+    }
+
+    const num = Number(dec);
+    if (isNaN(num)) return;
+
+     document.getElementById("bin").value = num.toString(2);
+    startAutoClear();
+});
+
+
+
+// Binääriluku → Desimaali
+document.getElementById("bin").addEventListener("input", function () {
+    const bin = this.value;
+
+    if (bin === "") {
+        document.getElementById("dec").value = "";
+        return;
+    }
+
+
+    // sallitaan vain 0 ja 1
+    if (!/^[01]+$/.test(bin)){
+        document.getElementById("dec").value = "Virhe";
+        return;
+    }
+
+    document.getElementById("dec").value = parseInt(bin, 2);
+    startAutoClear();
+});
+
+
+
+</script>
+
+</body>
+</html>
