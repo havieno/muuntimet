@@ -24,47 +24,99 @@
         }
     </script>
 
-    <style>
-        body {
-            background-color: #00A2E8;
-            margin-left: 3%;
-            margin-right: 3%;
-            font-family: Arial, sans-serif;
-            }
-    </style>
-    
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 300px;
+        margin: 20px auto;
+        padding: 10px;
+	background-color: #00A2E8; /* vaalea sininen */
+        border-radius: 10px;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 18px;
+    }
+    .info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+    }
+</style>
+
 </head>
+
 <body>
+<h2>Dec2Hex / Hex2Dec</h2>
 
-<h1>Hexamuunnin</h1>
+<label>Desimaali → Hexaluku</label>
+<input id="dec" type="number" placeholder="Syötä desimaaliluku">
 
-<label>Desimaali → Hex</label><br>
-<input id="dec" type="number" oninput="toHex()"><br><br>
+<label>Hexaluku → Desimaali</label>
+<input id="hex" type="text" placeholder="Syötä hexaluku (A...F, ja/tai 1...9 jne.)">
 
-<label>Hex → Desimaali</label><br>
-<input id="hex" type="text" oninput="toDec()"><br><br>
+<div class="info">Kentät tyhjentyvät automaattisesti 3 sekunnin kuluttua.</div>
 
 <script>
-function toHex() {
-    const dec = parseInt(document.getElementById("dec").value);
-    if (!isNaN(dec)) {
-        document.getElementById("hex").value = dec.toString(16).toUpperCase();
-    }
+let clearTimer;
+
+// Tyhjennys 3 sekunnin kuluttua
+function startAutoClear() {
+    clearTimeout(clearTimer);
+    clearTimer = setTimeout(() => {
+        document.getElementById("dec").value = "";
+        document.getElementById("hex").value = "";
+    }, 3000);
 }
 
-function toDec() {
-    const hex = document.getElementById("hex").value;
-    if (/^[0-9A-Fa-f]+$/.test(hex)) {
-        document.getElementById("dec").value = parseInt(hex, 16);
+
+
+// Desimaali → Hexaluku
+document.getElementById("dec").addEventListener("input", function () {
+    const dec = this.value;
+
+    if (dec === "") {
+        document.getElementById("hex").value = "";
+        return;
     }
-}
+
+    const num = Number(dec);
+    if (isNaN(num)) return;
+
+     document.getElementById("hex").value = num.toString(16).toUpperCase();
+    startAutoClear();
+});
+
+
+
+// Hexaluku → Desimaali
+document.getElementById("hex").addEventListener("input", function () {
+    // Muutetaan syöte heti isoiksi kirjaimiksi
+    this.value = this.value.toUpperCase();
+    const hex = this.value;
+
+    if (hex === "") {
+        document.getElementById("dec").value = "";
+        return;
+    }
+
+    // sallitaan vain testaus tähän: (/^[0-9A-Fa-f]+$/.test(hex))
+    if (!/^[0-9A-Fa-f]+$/.test(hex)) {
+        document.getElementById("dec").value = "Virhe";
+        return;
+    }
+
+    document.getElementById("dec").value = parseInt(hex, 16);
+    startAutoClear();
+});
+
+
+
+
 </script>
 
 </body>
-
 </html>
-
-
-
-
-
